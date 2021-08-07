@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { WebSocketServer } from '@nestjs/websockets';
 
-@WebSocketGateway(80)
+@WebSocketGateway(3003, { cors: true })
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -32,6 +32,9 @@ export class AppGateway
 
   handleDisconnect() {
     this.clientCount--;
+    this.wss.emit('client-count', {
+      data: this.clientCount,
+    });
   }
 
   @SubscribeMessage('message')
